@@ -1,0 +1,59 @@
+name: "🧪 Go Build 🧪"
+description: "Runs Go within internal folder"
+inputs:
+  token:
+    required: true
+    description: 'Git package token'
+  user:
+    required: true
+    description: 'Git package username'
+  main_path:
+    required: true
+    description: 'Path of your main file'
+    default: '.'
+  output_bin_path:
+    default: './bin'
+    required: false
+    description: 'If provided, the app bin wil base save in this path'
+  output_bin_name:
+    default: ''
+    required: false
+    description: 'If provide, the upload-artifact will receive this name '
+runs:
+  using: "composite"
+  steps:
+    - name: Show image release information
+      shell: bash
+      run: |
+        echo "Show image release information"
+          cat /etc/*release
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version-file: "go.mod"
+        check-latest: true
+
+#    - name: Config Git
+#      shell: bash
+#      run: |
+#        echo "Config git for GOPRIVATE dependencies"
+#          go env -w GOPRIVATE="github.com/Gilmardealcantara/*"
+#          git config url."ssh://git@github.com".insteadOf "https://github.com"
+#          echo "machine github.com login ${{ inputs.user }} password ${{ inputs.token }} " > "$HOME"/.netrc
+
+    - name: Build Binary
+      shell: bash
+      run: |
+        echo "Build Binary"
+          ls -l 
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o ${{ inputs.output_bin_path }}/app ${{ inputs.main_path }}
+          ls -l ${{ inputs.output_bin_path }}
+
+    - name: save-bin
+      id: go_app_bin_output
+      uses: actions/upload-artifact@v4
+      if: ${{ inputs.output_bin_path != '' && inputs.output_bin_name != ''  }}
+      with:
+        name: ${{ inputs.output_bin_name }}
+        path: ${{ inputs.output_bin_path }}

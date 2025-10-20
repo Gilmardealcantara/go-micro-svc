@@ -1,0 +1,55 @@
+# This workflow would be run on opening or updating a pull request.
+# This workflow will include a the provider side verification + asking if the provider side can be deployed to production given the state of the contract. When there is a change to the provider side this will need to run to see if the contract with the consumer is still being upheld.
+
+name: Quality CI
+
+on:
+  workflow_call:
+  pull_request:
+    branches:
+      - main
+  push:
+    tags-ignore:
+      - "**"
+
+concurrency:
+ group: ${{github.workflow}}-${{github.ref}}
+ cancel-in-progress: true
+
+
+jobs:
+  build-app:
+    name: Build and Quality Gate
+    runs-on: [self-hosted, staging-iac]
+    steps:
+      - name: Checkout Application
+        uses: actions/checkout@v3
+
+      - name: Application Build
+        uses: ./github/actions/golang/build
+        with:
+          main_path: ./cmd/api
+          user: ${{ secrets.GH_PACKAGE_USERNAME }}
+          token: ${{ secrets.GH_PACKAGE_TOKEN }}
+
+      - name: Lint Go
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.62.0
+
+      - name: Unit Tests
+        uses: ./github/actions/golang/test
+        with:
+          unit_tests_exclude: 'pkg/api/controllers|/cmd/api/|/docs|/tests' # skip integration test
+          coverage_threshold: 1
+
+      - name: Integration tests
+        shell: bash
+        run: |
+          echo "Running integration tests"
+            go test `go list ./... | grep /pkg/api/controllers` -coverprofile=coverage.txt -covermode=atomic -tags testing -v
+
+      - name: Check Coverage
+        uses: ./github/actions/golang/coverage
+        with:
+          coverage_threshold: 55

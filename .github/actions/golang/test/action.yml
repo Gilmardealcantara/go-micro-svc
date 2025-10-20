@@ -1,0 +1,36 @@
+name: "🧪 Go Test Runner 🧪"
+description: "Require run build before if there is some private repo"
+inputs:
+  unit_tests_exclude:
+    description: "Pattern for exclude files folders using go list, ex: 'cmd|interfaces'"
+    required: false
+    default: 'xxxxxxx'
+  coverage_threshold:
+    default: '80'
+    description: 'Test Coverage Threshold in %'
+    required: false
+  coverage_file:
+    default: 'coverage.txt'
+    description: 'Test Coverage txt file generated when you run tests'
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Unit Tests Select
+      shell: bash
+      run: |
+        echo "Execute Unit Tests For"
+          go list ./... | grep -v  -E '${{ inputs.unit_tests_exclude }}'
+
+    - name: Unit Tests
+      shell: bash
+      run: |
+        echo "Running Unit tests"
+          go test `go list ./... | grep -v  -E '${{ inputs.unit_tests_exclude }}'` -coverprofile=coverage.txt -covermode=atomic -tags testing
+
+    - name: Check Coverage
+      uses: ./github/actions/golang/coverage
+      with:
+        coverage_threshold: ${{ inputs.coverage_threshold }}
+        coverage_file: ${{ inputs.coverage_file }}

@@ -1,0 +1,21 @@
+#!/bin/sh
+
+echo "==> Installing Programming Languages and tools Using ASDF…"
+if ! asdf install; then
+  asdf plugin add golang
+  asdf plugin add swag
+  asdf plugin add golangci-lint
+  asdf plugin add pre-commit
+  asdf plugin add gomigrate
+  if ! asdf install; then
+    echo "Failed to install dependencies, take a look if you need to add some plugins!" >&2
+    echo "Try run: asdf plugin add <plugin-name>"
+    exit 1
+  fi
+fi
+
+echo "==> Setting up pre-commit hooks"
+pre-commit install -f --install-hooks
+pre-commit install -t commit-msg -f --install-hooks
+
+echo "==> Setup ok!!!"

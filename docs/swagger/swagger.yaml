@@ -1,0 +1,8 @@
+basePath: /
+info:
+  contact: {}
+  description: This is the API for the sophisticated Hello World App
+  title: Hello World App
+  version: "1.0"
+paths: {}
+swagger: "2.0"

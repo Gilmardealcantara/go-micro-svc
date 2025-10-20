@@ -1,0 +1,67 @@
+version: '3.9'
+services:
+  # this template is configured to use postgres, therefore setting up
+  # postgres service here. Feel free to change it if you choose to use
+  # a different db for your application.
+  postgres:
+    container_name: template-app-postgres
+    image: 'postgres:16'
+    networks:
+      - new
+    environment:
+      DB_HOST: localhost
+      DB_NAME: go-service-template # init_db.sh will create db and user with this name
+      POSTGRES_DB: go-service-template
+      POSTGRES_USER: go-service-template
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      # test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -d go-service-template -U go-service-template"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 5433:5432
+    restart: always
+    volumes:
+      - ./scripts/db:/docker-entrypoint-initdb.d
+    command: ["postgres", "-c", "log_statement=all"]
+
+#  app:
+#    container_name: go-service-template
+#    build:
+#      context: .
+#      dockerfile: Dockerfile.dev
+#      target: builder
+#      args:
+#        GH_TOKEN: $GH_PACKAGE_TOKEN
+#    environment:
+#      APP_NAME: go-service-template-app
+#      BIND_PORT: 8000
+#      BIND_ADDRESS: localhost
+#      SENTRY_DSN: www.example.com
+#      # these env vars should be secrets in a production application!
+#      # they should be placed in .env-* files and encrypted
+#      DB_HOST: localhost
+#      DB_NAME: go-service-template
+#      DB_USERNAME: go-service-template
+#      DB_PASSWORD: password
+#      DB_PORT: 5433
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#    ports:
+#      - 8000:8000
+#    networks:
+#      - new
+#    links:
+#      - postgres
+#    command: ./server
+#    # command: tail -f /dev/null
+#    ## Config for run docker point to app
+#    #volumes:
+#    #  - .:/go/bin/go-microsvc-template/
+#    #command: reflex -r "\.go$$" -s -- sh -c "go run ./cmd/api/main.go"
+
+networks:
+  new:
