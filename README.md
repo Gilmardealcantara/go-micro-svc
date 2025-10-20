@@ -188,4 +188,5 @@ make db_migrate_create name=new_migration_name
 - [ ] Setup/Test dockerfile dev
 - [ ] Add open telemetry setup
 - [ ] Add temporal setup
+- [ ] Fix lint (local and ci)
 - 

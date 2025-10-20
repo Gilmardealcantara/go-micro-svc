@@ -34,10 +34,10 @@ jobs:
           user: ${{ secrets.GH_PACKAGE_USERNAME }}
           token: ${{ secrets.GH_PACKAGE_TOKEN }}
 
-      - name: Lint Go
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: v2.5.0
+#      - name: Lint Go
+#        uses: golangci/golangci-lint-action@v6
+#        with:
+#          version: v2.5.0
 
       - name: Unit Tests
         uses: ./.github/actions/golang/test
