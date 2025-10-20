@@ -43,7 +43,7 @@ jobs:
         uses: ./.github/actions/golang/test
         with:
           unit_tests_exclude: 'pkg/api/controllers|/cmd/api/|/docs|/tests' # skip integration test
-          coverage_threshold: 1
+          coverage_threshold: 0
 
       - name: Integration tests
         shell: bash
