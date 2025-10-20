@@ -1,8 +1,52 @@
 basePath: /
+definitions:
+  controllers.healthPayload:
+    properties:
+      hostname:
+        type: string
+      status:
+        type: string
+    type: object
 info:
   contact: {}
   description: This is the API for the sophisticated Hello World App
   title: Hello World App
   version: "1.0"
-paths: {}
+paths:
+  /__healthcheck__:
+    get:
+      consumes:
+      - application/json
+      description: Returns the current health status of the application.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.healthPayload'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.healthPayload'
+      summary: Get healthcheck
+      tags:
+      - health
+  /hello:
+    get:
+      consumes:
+      - application/json
+      description: Returns a simple hello world message.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'resp: world'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get hello world
+      tags:
+      - hello
 swagger: "2.0"
