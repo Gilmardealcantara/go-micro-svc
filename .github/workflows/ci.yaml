@@ -22,10 +22,10 @@ concurrency:
 jobs:
   build-app:
     name: Build and Quality Gate
-    runs-on: [self-hosted, staging-iac]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Application
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Application Build
         uses: ./github/actions/golang/build
@@ -37,7 +37,7 @@ jobs:
       - name: Lint Go
         uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.62.0
+          version: v2.5.0
 
       - name: Unit Tests
         uses: ./github/actions/golang/test
