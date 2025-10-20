@@ -30,7 +30,7 @@ runs:
           go test `go list ./... | grep -v  -E '${{ inputs.unit_tests_exclude }}'` -coverprofile=coverage.txt -covermode=atomic -tags testing
 
     - name: Check Coverage
-      uses: ./github/actions/golang/coverage
+      uses: ./.github/actions/golang/coverage
       with:
         coverage_threshold: ${{ inputs.coverage_threshold }}
         coverage_file: ${{ inputs.coverage_file }}
