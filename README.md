@@ -180,9 +180,12 @@ make db_migrate_create name=new_migration_name
 - [x] Setup db migrations
 - [x] Fix pipelines
 - [x] update health check endpoint with db ping and hostname result
-- [ ] Fix dockerfile and docker compose...
-- [ ] Review and improve swagger config
-- [ ] Add gracefully shutdown config
-- [ ] Add rest client with telemetry
+- [x] Fix dockerfile and docker compose...
+- [x] Review and improve swagger config
+- [x] Add gracefully shutdown config
+- [x] Add rest client with telemetry
 - [ ] Add http base utils dor telemetry
-- [ ] Setup dockerfile dev
+- [ ] Setup/Test dockerfile dev
+- [ ] Add open telemetry setup
+- [ ] Add temporal setup
+- 
